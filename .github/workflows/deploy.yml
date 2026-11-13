@@ -16,20 +16,13 @@ steps:
     uses: actions/checkout@v4
 
   - name: Build Docker image
-    run: |
-      docker build -t go-cicd-app:latest .
+    run: docker build -t go-cicd-app:latest .
 
   - name: Stop previous container
-    run: |
-      docker rm -f go-cicd-app || true
+    run: docker rm -f go-cicd-app || true
 
   - name: Start new container
-    run: |
-      docker run -d \
-        --name go-cicd-app \
-        --restart unless-stopped \
-        -p 8083:8888 \
-        go-cicd-app:latest
+    run: docker run -d --name go-cicd-app --restart unless-stopped -p 8083:8888 go-cicd-app:latest
 
   - name: Check application
     run: |
