@@ -1,37 +1,37 @@
-имя: Build and Deploy Go App
+name: Build and Deploy Go App
 
-по:
-Толчок:
-ветви:
-- основной
+on:
+push:
+branches:
+- main
 workflow_dispatch:
 
-Вакансии:
-Развернуть:
-run-on: self-hosted
+jobs:
+deploy:
+runs-on: self-hosted
 
 
-шаги:
-  - имя: Кассовый репозиторий
-    использование: action/checkout@v4
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-  - имя: Построить изображение Docker
+  - name: Build Docker image
     run: |
-      docker build -t go-cicd-app: последний .
+      docker build -t go-cicd-app:latest .
 
-  - имя: Остановить предыдущий контейнер
+  - name: Stop previous container
     run: |
       docker rm -f go-cicd-app || true
 
-  - имя: Запустите новый контейнер
+  - name: Start new container
     run: |
-      докер-ран -d \
-        --имелое gicid-app\
-        --перезапуск, если не остановить \
-        -п 8083:8888 \
-        go-cicd-app: последнее
+      docker run -d \
+        --name go-cicd-app \
+        --restart unless-stopped \
+        -p 8083:8888 \
+        go-cicd-app:latest
 
-  - имя: Проверить приложение
+  - name: Check application
     run: |
-      Спать 5
-      завивка --Fail http://localhost:8083
+      sleep 5
+      curl --fail http://localhost:8083
